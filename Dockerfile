@@ -12,6 +12,8 @@ WORKDIR /app
 COPY requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
 
+RUN ls -l /app
+
 #Copy project files into the container
 COPY . .
 

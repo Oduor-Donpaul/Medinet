@@ -1,10 +1,15 @@
-from .models import Practitioner, Patient, Appointment, Hospital, Disease, HealthRiskAssessement
+from .models import Practitioner, Patient, Appointment, Hospital, Disease, HealthRiskAssessement, Services
 from rest_framework import serializers
+from django.contrib.auth.models import User
 
 class PractitionerSerializer(serializers.ModelSerializer):
+
+    username = serializers.CharField(source='user.username', read_only=True)
+    first_name = serializers.CharField(source='user.first_name', read_only=True)
+
     class Meta:
         model = Practitioner
-        fields = '__all__'
+        fields = fields = ['id', 'created_at', 'updated_at', 'speciality', 'experience', 'start_availability', 'end_availability', 'image', 'description', 'service', 'username', 'first_name']
 
 
 class PatientSerializer(serializers.ModelSerializer):
@@ -31,3 +36,26 @@ class HealthRiskAssessementSerializer(serializers.ModelSerializer):
     class Meta:
         model = HealthRiskAssessement
         fields = '__all__'
+
+class ServicesSerializer(serializers.ModelSerializer):
+
+    Practitioner = PractitionerSerializer()
+
+    class Meta:
+        model = Services
+        fields = '__all__'
+
+    def get_practitioner_name(self, obj):
+        return obj.practitioner.first_name
+    
+
+class UserSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password', 'first_name', 'last_name']
+
+    def create(self, validated_data):
+        user = User.objects.create_user(**validated_data)
+        return user

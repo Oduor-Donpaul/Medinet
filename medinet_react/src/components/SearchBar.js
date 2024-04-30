@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 const SearchBar = ({ data, setSearchResults, details }) => {
     const [query, setQuery] = useState("");
 
+    console.log("data:", data)
+
 
     useEffect(() => {
 
@@ -19,7 +21,9 @@ const SearchBar = ({ data, setSearchResults, details }) => {
         /*((item.speciality.toLowerCase().includes(query.toLowerCase()))*/)
         setSearchResults(filteredResults)
 
-        },[query]);
+        },[data]);
+
+        console.log("query:", query)
 
 
     return (

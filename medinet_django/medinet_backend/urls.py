@@ -10,5 +10,9 @@ urlpatterns = [
         path('hospital/', views.hospital_view, name='hospital-list'),
         path('hospital/<int:pk>/',  views.hospital_detail_view, name='hospital-detail'),
         path('risk/<int:pk>/', views.risk_assessement_view, name='risk-detail'),
+        path('services/',views.services_view, name='services-list'),
+        path('service/<int:pk>/', views.service_detail_view, name='service-datails'),
+        path('register/', views.register_view, name='register'),
+        path('login/', views.login, name='login'),
 
         ]

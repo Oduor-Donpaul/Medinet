@@ -1,12 +1,16 @@
 import React, { useState } from "react";
 import { Form, Button } from "react-bootstrap";
+import axios from 'axios'
 
-const CreateAppointment = () => {
+const CreateAppointmentForm = ({defaulPractitioner, defaultService}) => {
 
     const [formData, setFormData] = useState({
-        title: "",
+        patient: '',
+        practitioner: defaulPractitioner || '',
+        service: defaultService || '',
         date: "",
-        time: ""
+        time: "",
+        status: 'pending'
     })
 
     const handleInputChange = (e) => {
@@ -14,13 +18,18 @@ const CreateAppointment = () => {
         setFormData({...formData, [name]: value})
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        try {
+            const response = await axios.post('http://localhost/api/appointment/<int:pk>/');
+            console.log("Appointment created:", response.data);
+        } catch (error) {
+            console.error('Error creating appointment:', error)
+        }
 
         console.log("data submitted", formData);
 
         setFormData({
-            title: "",
             date: "",
             time: ""
         })
@@ -33,19 +42,38 @@ const CreateAppointment = () => {
             </div>
             <div style={{display: 'flex', justifyContent: 'center', width: '100%', alignItems: 'center'}}>
                 <Form onSubmit={handleSubmit}>
-                    <Form.Group controlId="title" >
-                        <Form.Label>Title</Form.Label>
+
+                    <Form.Group controlId="patient">
+                        <Form.Label>Patient</Form.Label>
                         <Form.Control
                             type="text"
-                            name="title"
-                            value={formData.title}
+                            name="patient"
+                            value={formData.patient}
                             onChange={handleInputChange}
-                            
-                            />
-
+                        />
                     </Form.Group>
 
-                    <Form.Group controlId="startDate">
+                    <Form.Group controlId="practitioner">
+                        <Form.Label>Practitioner</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="practitioner"
+                            value={formData.practitioner}
+                            onChange={handleInputChange}
+                        />
+                    </Form.Group>
+
+                    <Form.Group controlId="service">
+                        <Form.Label>Service</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="service"
+                            value={formData.service}
+                            onChange={handleInputChange}
+                        />
+                    </Form.Group>
+
+                    <Form.Group controlId="date">
                         <Form.Label>Date</Form.Label>
                         <Form.Control
                             type="date"
@@ -78,4 +106,4 @@ const CreateAppointment = () => {
     )
 }
 
-export default CreateAppointment
+export default CreateAppointmentForm;

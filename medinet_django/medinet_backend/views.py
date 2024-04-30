@@ -4,6 +4,8 @@ from rest_framework.response import Response
 from .serializers import *
 from .models import *
 from rest_framework import status
+from django.contrib.auth import authenticate
+
 
 # Create your views here.
 
@@ -93,7 +95,7 @@ def appointment_view(request, pk):
         return Response(serializer.data)
 
     elif request.method == 'POST':
-        serializer = AppointmentSrializer(data=request.data)
+        serializer = AppointmentSerializer(data=request.data)
 
         if serializer.is_valid():
             serializer.save()
@@ -109,21 +111,6 @@ def appointment_view(request, pk):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['GET', 'POST'])
-def hospital_view(request):
-    if request.method == 'GET':
-        queryset = Hospital.objects.all()
-        serializer = HospitalSerializer(queryset, many=True)
-        return Response(serializer.data)
-
-    elif request.method == 'POST':
-        serializer = HospitalSerializer(data=request.data)
-
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def hospital_detail_view(request, pk):
@@ -146,7 +133,7 @@ def hospital_detail_view(request, pk):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
-        hospita.delete()
+        hospital.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -158,7 +145,7 @@ def risk_assessement_view(request, pk):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
-        serializer = HealthRiskAssessemetSerializer(risk)
+        serializer = HealthRiskAssessementSerializer(risk)
         return Response(serializer.data)
 
     elif request.method == 'POST':
@@ -166,7 +153,7 @@ def risk_assessement_view(request, pk):
 
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status_HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 @api_view(['GET'])
@@ -179,5 +166,78 @@ def disease_view(request, pk):
     if request.method == 'GET':
         serializer = DiseaseSerializer(disease)
         return Response(serializer.data)
+    
+@api_view(['GET', 'PUT'])
+def service_detail_view(request, pk):
+    try:
+        service = Services.objects.get(pk=pk)
+    except Services.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+    if request.method == 'GET':
+        serializer = ServicesSerializer(service)
+        return Response(serializer.data)
+    
+    if request.method == 'PUT':
+        serializer = ServicesSerializer(service, data=request.data)
 
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['GET', 'POST'])
+def services_view(request):
+    if request.method == 'GET':
+        queryset = Services.objects.all()
+        serializer = ServicesSerializer(queryset, many=True)
+        return Response(serializer.data)
+    
+    elif request.method == 'POST':
+        serializer = ServicesSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
  
+
+
+@api_view(['GET', 'POST'])
+def hospital_view(request):
+    if request.method == 'GET':
+        queryset = Hospital.objects.all()
+        serializer = HospitalSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    elif request.method == 'POST':
+        serializer = HospitalSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST']) 
+def register_view(request):
+    if request.method == 'POST':
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "User created successfully", "user": serializer.data}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+
+@api_view(['POST'])
+def login(request):
+    if request.method == 'POST':
+        username = request.data.get('username')
+        password = request.data.get('password')
+        user = authenticate(username=username, password=password)
+
+        if user:
+            return Response({'message': 'Login successful'}, status=status.HTTP_200_OK)
+        return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)

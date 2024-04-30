@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Form } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
 
 const UpdateDetails = () => {
 
@@ -8,7 +8,9 @@ const UpdateDetails = () => {
         firstName: '',
         lastName: '',
         phoneNumber: '',
-        dateOfBirth: ''
+        dateOfBirth: '',
+        location: '',
+        medicalHistory: ''
     });
 
     //handle form input change
@@ -21,28 +23,42 @@ const UpdateDetails = () => {
     };
 
     const handleSubmit = (e) => {
-        e.preventDefaul();
+        e.preventDefault();
+        console.log('FORM DATA', formData);
+        
+        setFormData({
+            firstName: '',
+            lastName: '',
+            phoneNumber: '',
+            dateOfBirth: '',
+            location: '',
+            medicalHistory: ''
+        })
     };
 
     return (
-        <div>
+        <div >
             <div style={{marginTop: '10px', marginBottom: '10px' }} >
-                <h2><b>Update Details</b></h2>
+                <h2><b>Update your profile</b></h2>
             </div>
-            <div>
-                <Form onSubmit={handleSubmit}>
-                    <Form.Group controlId='firstName'>
-                        <Form.Label>First Name</Form.Label>
-                        <Form.Control
-                        type="text"
-                        name="firstName"
-                        value={formData.firstName}
-                        onChange={handleChange}
+            <div style={{display: 'flex', width: '100%', alignItems: 'center', justifyContent: 'center'}}>
+                <Form onSubmit={handleSubmit} style={{width: '40%'}}>
+                    <Form.Group controlId='firstName' style={{textAlign: 'left'}}>
+
+                        <Form.Label className="col-sm-12"><b>First Name</b></Form.Label>
+                       
+                            <Form.Control
+                                type="text"
+                                name="firstName"
+                                value={formData.firstName}
+                                onChange={handleChange}
                         />
+                        
+
                     </Form.Group>
 
-                    <Form.Group controlId="lastName">
-                        <Form.Label>Last Name</Form.Label>
+                    <Form.Group controlId="lastName" style={{textAlign: 'left'}} >
+                        <Form.Label><b>Last Name</b></Form.Label>
                         <Form.Control
                             type="text"
                             name="lastName"
@@ -52,8 +68,8 @@ const UpdateDetails = () => {
                         />
                     </Form.Group>
 
-                    <Form.Group controlId="dateOfBirth">
-                        <Form.Label>Date of Birth</Form.Label>
+                    <Form.Group controlId="dateOfBirth" style={{textAlign: "left"}} >
+                        <Form.Label><b>Date of Birth</b></Form.Label>
                         <Form.Control
                             type="date"
                             name="dateOfBirth"
@@ -63,14 +79,44 @@ const UpdateDetails = () => {
                         />
                     </Form.Group>
 
-                    <Form.Group controlId="phoneNumber">
-                        <Form.Label>Medical History</Form.Label>
+                    <Form.Group controlId="phoneNumber" style={{textAlign: 'left'}} >
+                        <Form.Label><b>Contact Number</b></Form.Label>
+                        <Form.Control
+                            type="tel"
+                            name="phoneNumber"
+                            placeholder="+254712345678"
+                            value={formData.phoneNumber}
+                            onChange={handleChange}
+
+                    />
+                    </Form.Group>
+
+                    <Form.Group controlId="location" style={{textAlign: 'left'}} >
+                        <Form.Label><b>Location</b></Form.Label>
                         <Form.Control
                             type="text"
-                            name="phoneNumber"
-                            value={formData.phoneNumber}
+                            name="location"
+                            placeholder="Enter your location"
+                            value={formData.location}
+                            onChange={handleChange}
                         />
                     </Form.Group>
+
+
+                    <Form.Group controlId="medicalHistory" style={{textAlign: 'left'}}>
+                        <Form.Label><b>Medical History</b></Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="medicalHistory"
+                            placeholder="Enter comma separated values"
+                            value={formData.medicalHistory}
+                            onChange={handleChange}
+                        />
+                    </Form.Group>
+
+                    <Button variant="primary" type="submit" style={{marginTop: '15px'}} >
+                        <small>Submit</small>
+                    </Button>
 
 
                 </Form>
